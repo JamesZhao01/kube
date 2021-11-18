@@ -13,11 +13,12 @@ spec:
                 operator: NotIn
                 values:
                   - perfsonar.csusb.edu
+                  - prp-gpu-3.t2.ucsd.edu
   containers:
   - name: demo
-    image: gitlab-registry.nrp-nautilus.io/vivianxu1999/smartmwms:latest
+    image: pytorch/pytorch:1.3-cuda10.1-cudnn7-devel
     command: ["/bin/bash"]
-    args: ["-c", "ls /data; cd /workspace; sleep infinity"]
+    args: ["-c", "cd /workspace; /data/scripts/init.sh; sleep infinity"]
     volumeMounts:
       - name: james-smart-vol
         mountPath: /data
