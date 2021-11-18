@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: j-pod
+  namespace: guru-research
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: NotIn
+            values:
+            - perfsonar.csusb.edu
+            - nrp-c5.nysernet.org
+  containers:
+  - name: demo
+    image: gitlab-registry.nautilus.optiputer.net/vivianxu1999/smartmwms:latest
+    command:
+    - "bash"
+    args:
+    - "sleep-infinity"
+    volumeMounts:
+    - name: emptyvol
+      mountPath: /opt/repo
+    - name: james-smart-vol
+      mountPath: /data
+    - name: dshm
+      mountPath: /dev/shm
+    resources:
+      limits:
+        memory: 12Gi
+        cpu: "2"
+        nvidia.com/gpu: "1"
+      requests:
+        memory: 12Gi
+        cpu: "2"
+        nvidia.com/gpu: "1"    
+  volumes:
+  - name: james-smart-vol
+    persistentVolumeClaim:
+      claimName: james-smart-vol
+  - name: emptyvol
+    emptyDir: {}
+  - name: dshm
+    emptyDir:
+      medium: Memory

@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: j-job-lightning
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - perfsonar.csusb.edu
+      containers:
+      - name: demo
+        image: mgahl/pytorch-tensorflow
+        command: ["/bin/bash"]
+        args: ["-c", "pip install --ignore-installed pytorch-lightning; /data/scripts/init.sh; /data/scripts/cp_siamese.sh; /data/scripts/run_lightning.sh"]
+        volumeMounts:
+          - name: james-smart-vol
+            mountPath: /data
+          - name: james-data-vol
+            mountPath: /storage
+          - name: emptyvol
+            mountPath: /opt/repo
+        resources:
+          limits:
+            memory: 24Gi
+            cpu: "2"
+            nvidia.com/gpu: "1"
+          requests:
+            memory: 24Gi
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+        - name: james-smart-vol
+          persistentVolumeClaim:
+            claimName: james-smart-vol
+        - name: james-data-vol
+          persistentVolumeClaim:
+            claimName: james-data-vol
+        - name: emptyvol
+          emptyDir: {}
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: gitlab-auth
+  backoffLimit: 6

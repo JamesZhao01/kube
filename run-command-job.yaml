@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: j-job-command
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - perfsonar.csusb.edu
+                      - nrp-c5.nysernet.org
+                      - k8s-3090-01.calit2.optiputer.net
+                      - fiona8-3.calit2.uci.edu
+                      - k8s-chase-ci-07.calit2.optiputer.net
+      containers:
+      - name: demo
+        image: gitlab-registry.nautilus.optiputer.net/vivianxu1999/smartmwms:latest
+        command: ["/bin/bash"]
+        args: ["-c", "cd /workspace; /data/scripts/init.sh; /data/scripts/prepare_imagenet.sh"]
+        volumeMounts:
+          - name: james-smart-vol
+            mountPath: /data
+          - name: james-data-vol
+            mountPath: /storage
+          - name: emptyvol
+            mountPath: /opt/repo
+        resources:
+          limits:
+            memory: 20Gi
+            cpu: "2"
+            nvidia.com/gpu: "1"
+          requests:
+            memory: 20Gi
+            cpu: "2"
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: james-smart-vol
+        persistentVolumeClaim:
+          claimName: james-smart-vol
+      - name: james-data-vol
+        persistentVolumeClaim:
+          claimName: james-data-vol
+      - name: emptyvol
+        emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 2

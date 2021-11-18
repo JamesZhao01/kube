@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: j-job
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values:
+                      - perfsonar.csusb.edu
+                      - nrp-c5.nysernet.org
+                      - k8s-3090-01.calit2.optiputer.net
+                      - fiona8-3.calit2.uci.edu
+                      - k8s-chase-ci-07.calit2.optiputer.net
+      initContainers:
+        - name: init-clone-repo
+          image: alpine/git
+          args:
+            - clone
+            - --single-branch
+            - --branch
+            - james-branch
+            - https://gitlab.nautilus.optiputer.net/vivianxu1999/smartmwms.git
+            - /opt/repo/smartmwms
+          volumeMounts:
+            - name: james-smart-vol
+              mountPath: /data
+            - name: emptyvol
+              mountPath: /opt/repo
+      containers:
+        - name: demo
+          image: gitlab-registry.nautilus.optiputer.net/vivianxu1999/smartmwms:latest
+          command: ["bash"]
+          args: ["/opt/repo/smartmwms/commands.sh"]
+          volumeMounts:
+            - name: james-smart-vol
+              mountPath: /data
+            - name: emptyvol
+              mountPath: /opt/repo
+          resources:
+            limits:
+              memory: 24Gi
+              cpu: "2"
+              nvidia.com/gpu: "1"
+            requests:
+              memory: 24Gi
+              cpu: "2"
+              nvidia.com/gpu: "1"
+      volumes:
+        - name: james-smart-vol
+          persistentVolumeClaim:
+            claimName: james-smart-vol
+        - name: emptyvol
+          emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 6

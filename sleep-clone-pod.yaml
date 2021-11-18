@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: j-pod
+  namespace: guru-research
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                  - perfsonar.csusb.edu
+  containers:
+  - name: demo
+    image: gitlab-registry.nrp-nautilus.io/vivianxu1999/smartmwms:latest
+    command: ["/bin/bash"]
+    args: ["-c", "ls /data; cd /workspace; sleep infinity"]
+    volumeMounts:
+      - name: james-smart-vol
+        mountPath: /data
+      - name: james-data-vol
+        mountPath: /storage
+      - name: emptyvol
+        mountPath: /opt/repo
+    resources:
+      limits:
+        memory: 12Gi
+        cpu: "2"
+        nvidia.com/gpu: "1"
+      requests:
+        memory: 12Gi
+        cpu: "2"
+        nvidia.com/gpu: "1"
+  volumes:
+    - name: james-smart-vol
+      persistentVolumeClaim:
+        claimName: james-smart-vol
+    - name: james-data-vol
+      persistentVolumeClaim:
+        claimName: james-data-vol
+    - name: emptyvol
+      emptyDir: {}
+  imagePullSecrets:
+    - name: gitlab-auth
