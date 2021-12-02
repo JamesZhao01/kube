@@ -18,7 +18,7 @@ spec:
     image: pytorch/pytorch:1.3-cuda10.1-cudnn7-devel
     command: ["/bin/bash"]
     # /data/scripts/init.sh; 
-    args: ["-c", "sleep infinity"]
+    args: ["-c", "/data/scripts/init.sh; /data/scripts/cp_siamese.sh; /data/scripts/install_lightning.sh; sleep infinity"]
     volumeMounts:
       - name: james-smart-vol
         mountPath: /data
