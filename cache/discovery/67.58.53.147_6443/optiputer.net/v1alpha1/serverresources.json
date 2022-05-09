@@ -1,0 +1,1 @@
+{"kind":"APIResourceList","apiVersion":"v1","groupVersion":"optiputer.net/v1alpha1","resources":[{"name":"prpusers","singularName":"prpuser","namespaced":false,"kind":"PRPUser","verbs":["delete","deletecollection","get","list","patch","create","update","watch"],"storageVersionHash":"sC+kci3WKH0="}]}
