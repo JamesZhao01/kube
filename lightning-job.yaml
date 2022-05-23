@@ -19,7 +19,16 @@ spec:
       - name: demo
         image: cyoung02/smart:latest
         command: ["/bin/bash"]
-        args: ["-c", "cd /workspace; git clone https://jameszhao01:glpat-sjprR-nCmv92aK1M5dz7@gitlab.nrp-nautilus.io/jameszhao01/smart4.0.git; chmod u+x -R /workspace/smart4.0/scripts; /workspace/smart4.0/scripts/install_libs.sh; /workspace/smart4.0/scripts/cp_pair_data.sh; /workspace/smart4.0/scripts/cp_renormalized_data.sh;  /workspace/smart4.0/scripts/main.sh"]
+        # /data/scripts/init.sh; 
+        args: 
+        - "-c"
+        - >- 
+          cd /workspace &&
+          git clone https://jameszhao01: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@github.com/Cyoung02/smart4.5.git &&
+          chmod u+x -R /workspace/smart4.5/scripts &&
+          /workspace/smart4.5/scripts/cp_new_pair_data.sh && 
+          cd /workspace/smart4.5 &&
+          python train.py
         volumeMounts:
           - name: james-smart-vol
             mountPath: /data

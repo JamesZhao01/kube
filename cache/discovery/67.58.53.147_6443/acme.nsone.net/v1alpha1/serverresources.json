@@ -1,1 +1,0 @@
-{"kind":"APIResourceList","apiVersion":"v1","groupVersion":"acme.nsone.net/v1alpha1","resources":[{"name":"ns1","singularName":"","namespaced":false,"group":"webhook.acme.cert-manager.io","version":"v1alpha1","kind":"ChallengePayload","verbs":["create"]}]}

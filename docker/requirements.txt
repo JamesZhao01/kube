@@ -1,8 +1,0 @@
-matplotlib
-pillow
-sklearn
-scikit-image
-torchvision>=0.10.0
-tensorboardX
-graycode
-tensorboard

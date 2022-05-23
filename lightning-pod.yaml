@@ -18,7 +18,13 @@ spec:
     image: cyoung02/smart:latest
     command: ["/bin/bash"]
     # /data/scripts/init.sh; 
-    args: ["-c", "sleep infinity"]
+    args: 
+    - "-c"
+    - >- 
+      cd /workspace &&
+      git clone https://jameszhao01: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@github.com/Cyoung02/smart4.5.git &&
+      chmod u+x -R /workspace/smart4.5/scripts &&
+      sleep infinity
     volumeMounts:
       - name: james-smart-vol
         mountPath: /data
